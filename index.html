@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>ZIP Radius Search Pro</title>
+		
+		<!-- Bootstrap -->
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+		
+		<!-- Leaflet Core -->
+		<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+		<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+		
+		<!-- Plugins -->
+		<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+		<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+		<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+		
+		<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+		
+		<script src="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
+		<link rel="stylesheet" href="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
+		
+		<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+		<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+		
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+		
+		<!-- New libraries -->
+		<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		
+		<!-- Tools -->
+		<script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+		
+		<style>
+			#map {
+			height: 600px;
+			position: relative;
+			}
+			#radiusLabel {
+			position: absolute;
+			top: 10px;
+			left: 10px;
+			background-color: rgba(255,255,255,0.9);
+			padding: 6px 10px;
+			border-radius: 4px;
+			font-weight: bold;
+			z-index: 1000;
+			}
+			#chartContainer {
+			max-width: 600px;
+			margin: 2rem auto;
+			background: #fff;
+			padding: 1rem;
+			border-radius: 8px;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+			}
+			.leaflet-popup-content-wrapper {
+			font-size: 14px;
+			}
+			.leaflet-control-layers-expanded {
+			font-size: 13px;
+			}
+		</style>
+	</head>
+	<body class="bg-light">
+		
+		<div class="container py-4">
+			<div class="row mb-4">
+				<div class="col">
+					<h2 class="text-center text-primary">ZIP Radius Search Pro</h2>
+				</div>
+			</div>
+			
+			<div class="row g-3">
+				<div class="card col-md-4">
+					<label for="zip" class="form-label">Enter ZIP code:</label>
+					<input type="text" id="zip" class="form-control" placeholder="e.g. 20095">
+					
+					<label for="radius" class="form-label mt-2">Radius in km:</label>
+					<input type="number" id="radius" class="form-control" value="20" min="1">
+					
+					<label for="csvFile" class="form-label mt-2">Upload ZIP CSV:</label>
+					<input type="file" id="csvFile" class="form-control" accept=".csv">
+					
+					<button id="searchBtn" class="btn btn-primary w-100 mt-3">🔍 Search</button>
+					
+					<label for="prefixFilter" class="form-label mt-4">Filter ZIPs starting with:</label>
+					<input type="text" id="prefixFilter" class="form-control" placeholder="e.g. 2,23,456">
+					
+					<div class="d-grid gap-2 mt-3">
+						<button id="exportCSV" class="btn btn-outline-primary">Export CSV</button>
+						<button id="exportExcel" class="btn btn-outline-success">Export Excel</button>
+						<button id="exportTXT" class="btn btn-outline-secondary">Export ZIPs (TXT)</button>
+						<button id="downloadMap" class="btn btn-outline-dark">Download Map as Image</button>
+					</div>
+					
+					<div class="form-check form-switch mt-4">
+						<input class="form-check-input" type="checkbox" id="darkModeToggle">
+						<label class="form-check-label" for="darkModeToggle">Dark Mode Map</label>
+					</div>
+				</div>
+				
+				<div class="col-md-8">
+					<div id="map" class="rounded shadow-sm">
+						<div id="radiusLabel"></div>
+					</div>
+				</div>
+			</div>
+			
+			<div id="results" class="mt-4"></div>
+			
+			<div class="mt-3 d-flex justify-content-end gap-2">
+				<button id="exportCSV" class="btn btn-sm btn-outline-primary">Export CSV</button>
+				<button id="exportExcel" class="btn btn-sm btn-outline-success">Export Excel</button>
+				<button id="exportTXT" class="btn btn-sm btn-outline-dark">Export TXT</button>
+			</div>
+			
+			
+			
+			<div id="chartContainer " class="d-none">
+				<canvas id="zipChart"></canvas>
+			</div>
+			
+			
+			<div class="card p-3 mt-4">
+				<h5>ZIP Highlight Heatmap</h5>
+				<textarea id="zipInputArea" class="form-control mb-2" rows="2" placeholder="Enter ZIPs like 10115,10245,22111..."></textarea>
+				<input type="file" id="zipFileInput" class="form-control mb-2" accept=".csv" />
+				<button id="highlightBtn" class="btn btn-warning">Highlight ZIPs</button>
+			</div>
+			
+			
+			<button id="exportUnmatchedBtn" class="btn btn-outline-danger mt-2">
+				Export Unmatched ZIPs (CSV / Excel / TXT)
+			</button>
+			
+			
+		</div>
+		
+		
+		<script src="app.js"></script>
+	</body>
+</html>

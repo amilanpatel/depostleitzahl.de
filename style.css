@@ -1,0 +1,88 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f9;
+  color: #333;
+}
+#controls {
+  background: #fff;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+h2 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+label {
+  font-weight: 600;
+  margin-top: 1rem;
+}
+input, select, button {
+  padding: 0.6rem;
+  margin-top: 0.3rem;
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+button {
+  background-color: #2980b9;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+button:hover {
+  background-color: #3498db;
+}
+#map {
+  height: 600px;
+  position: relative;
+}
+#radiusLabel {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(255,255,255,0.9);
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  z-index: 1000;
+}
+table {
+  border-collapse: collapse;
+  margin: 2rem;
+  width: calc(100% - 4rem);
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+th, td {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+th {
+  background-color: #f0f0f0;
+}
+#results h3 {
+  margin: 2rem;
+  color: #2c3e50;
+}
+.leaflet-popup-content-wrapper {
+  font-size: 14px;
+}
+.leaflet-control-layers-expanded {
+  font-size: 13px;
+}
+
+#zipList {
+  font-size: 14px;
+}
+.badge.bg-secondary {
+  font-size: 13px;
+  padding: 5px 8px;
+  border-radius: 12px;
+}
