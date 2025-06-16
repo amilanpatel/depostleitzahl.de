@@ -77,6 +77,10 @@ th {
 .leaflet-control-layers-expanded {
   font-size: 13px;
 }
+#csvFile {
+  display: none;
+}
+
 
 #zipList {
   font-size: 14px;
