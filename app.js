@@ -40,24 +40,24 @@ const drawControl = new L.Control.Draw({
 });
 map.addControl(drawControl);
 
-// File upload
-document.getElementById('csvFile').addEventListener('change', function(e) {
-  const file = e.target.files[0];
-  plzDataLoaded = false;
-  Papa.parse(file, {
-    header: true,
-    skipEmptyLines: true,
-    complete: function(results) {
-      plzData = results.data.map(row => ({
-        plz: row.plz?.padStart(5, '0'),
-        lat: parseFloat(row.lat),
-        lon: parseFloat(row.lon)
-      })).filter(r => r.plz && !isNaN(r.lat) && !isNaN(r.lon));
-      plzDataLoaded = true;
-      alert("ZIP data loaded: " + plzData.length);
-    }
+fetch('data/plz_data.csv')
+  .then(response => response.text())
+  .then(csvText => {
+    Papa.parse(csvText, {
+      header: true,
+      skipEmptyLines: true,
+      complete: function(results) {
+        plzData = results.data.map(row => ({
+          plz: row.plz?.padStart(5, '0'),
+          lat: parseFloat(row.lat),
+          lon: parseFloat(row.lon)
+        })).filter(r => r.plz && !isNaN(r.lat) && !isNaN(r.lon));
+        plzDataLoaded = true;
+        console.log("Auto-loaded CSV with", plzData.length, "entries");
+      }
+    });
   });
-});
+
 
 
 // BLOCK 1: haversine()
