@@ -40,7 +40,7 @@ const drawControl = new L.Control.Draw({
 });
 map.addControl(drawControl);
 
-fetch('data/plz_data.csv')
+fetch('plz_data.csv')
   .then(response => response.text())
   .then(csvText => {
     Papa.parse(csvText, {
