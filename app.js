@@ -428,9 +428,6 @@ function exportFilteredData(type) {
 
 
 
-document.getElementById('exportCSV').addEventListener('click', () => exportFilteredData('csv'));
-document.getElementById('exportExcel').addEventListener('click', () => exportFilteredData('excel'));
-document.getElementById('exportTXT').addEventListener('click', () => exportFilteredData('txt'));
 
 // BLOCK 7: exportSelectedZips()
 // Purpose: Export selected ZIPs (from list and prefix tree) to CSV, Excel, or TXT.
@@ -467,9 +464,12 @@ function exportSelectedZips(format) {
 // --- END BLOCK 7 ---
 
 // Attach export buttons
-document.getElementById('exportCSV')?.addEventListener('click', () => exportSelectedZips('csv'));
-document.getElementById('exportExcel')?.addEventListener('click', () => exportSelectedZips('excel'));
-document.getElementById('exportTXT')?.addEventListener('click', () => exportSelectedZips('txt'));
+['csv', 'excel', 'txt'].forEach(type => {
+  document.querySelectorAll(`#export${type.toUpperCase()}`).forEach(btn => {
+    const handler = btn.classList.contains('btn-sm') ? exportSelectedZips : exportFilteredData;
+    btn.addEventListener('click', () => handler(type));
+  });
+});
 
 
 
