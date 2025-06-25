@@ -298,6 +298,17 @@ zipInput.addEventListener('keydown', e => {
 zipInput.addEventListener('paste', () => {
   setTimeout(() => document.getElementById('searchBtn').click(), 50);
 });
+zipInput.addEventListener('input', () => {
+  const val = zipInput.value.trim();
+  if (val.length === 5) {
+    const found = plzData.find(p => p.plz === val);
+    if (found) {
+      runSearch(found.lat, found.lon);
+    } else {
+      alert('ZIP not found');
+    }
+  }
+});
 
 document.getElementById('darkModeToggle').addEventListener('change', function () {
   darkMode = !darkMode;
