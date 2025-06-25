@@ -482,6 +482,7 @@ let unselectedLayer = L.layerGroup().addTo(map);
 let outsideLayer = L.layerGroup().addTo(map);
 
 function updateVisualSelectionState() {
+  if (!circle) return;
   selectedLayer.clearLayers();
   unselectedLayer.clearLayers();
   outsideLayer.clearLayers();
@@ -491,7 +492,7 @@ function updateVisualSelectionState() {
 
   // Selected ZIPs (orange)
   lastSearchResults.forEach(p => {
-    const dist = haversine(map.getCenter().lat, map.getCenter().lng, p.lat, p.lon).toFixed(2);
+    const dist = haversine(circle.getLatLng().lat, circle.getLatLng().lng, p.lat, p.lon).toFixed(2);
     const isSelected = selectedZips.has(p.plz);
     const marker = isSelected
       ? L.circle([p.lat, p.lon], {
