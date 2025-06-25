@@ -98,6 +98,11 @@ function runSearch(lat, lon) {
   updateMarkersAndTable(result, lat, lon);
   drawChart(result, lat, lon);
   map.fitBounds(circle.getBounds());
+
+  // Ensure visual overlay matches new results
+  if (typeof updateVisualSelectionState === 'function') {
+    updateVisualSelectionState();
+  }
 }
 // --- END BLOCK 2 ---
 
@@ -227,6 +232,11 @@ const zipListHTML = list
       }
     });
   });
+
+  // Reset overlay markers after rendering new results
+  if (typeof updateVisualSelectionState === 'function') {
+    updateVisualSelectionState();
+  }
 }
 // --- END BLOCK 3 ---
 
