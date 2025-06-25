@@ -279,6 +279,16 @@ document.getElementById('searchBtn').addEventListener('click', () => {
   runSearch(found.lat, found.lon);
 });
 
+const zipInput = document.getElementById('zip');
+zipInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    document.getElementById('searchBtn').click();
+  }
+});
+zipInput.addEventListener('paste', () => {
+  setTimeout(() => document.getElementById('searchBtn').click(), 50);
+});
+
 document.getElementById('darkModeToggle').addEventListener('change', function () {
   darkMode = !darkMode;
   map.removeLayer(darkMode ? baseTiles.light : baseTiles.dark);
