@@ -496,11 +496,16 @@ function exportSelectedZips(format) {
 // --- END BLOCK 7 ---
 
 // Attach export buttons
+const exportIdMap = { csv: 'exportCSV', excel: 'exportExcel', txt: 'exportTXT' };
 ['csv', 'excel', 'txt'].forEach(type => {
-  document.querySelectorAll(`#export${type.toUpperCase()}`).forEach(btn => {
-    const handler = btn.classList.contains('btn-sm') ? exportSelectedZips : exportFilteredData;
-    btn.addEventListener('click', () => handler(type));
-  });
+  document
+    .querySelectorAll(`#${exportIdMap[type]}, #${exportIdMap[type]}Selected`)
+    .forEach(btn => {
+      const handler = btn.classList.contains('btn-sm')
+        ? exportSelectedZips
+        : exportFilteredData;
+      btn.addEventListener('click', () => handler(type));
+    });
 });
 
 
