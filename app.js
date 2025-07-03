@@ -299,6 +299,7 @@ zipInput.addEventListener('paste', () => {
   setTimeout(() => document.getElementById('searchBtn').click(), 50);
 });
 zipInput.addEventListener('input', () => {
+  if (!plzDataLoaded) return;
   const val = zipInput.value.trim();
   if (val.length === 5) {
     const found = plzData.find(p => p.plz === val);
