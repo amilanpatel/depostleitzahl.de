@@ -53,7 +53,7 @@ fetch('plz_data.csv')
           lon: parseFloat(row.lon)
         })).filter(r => r.plz && !isNaN(r.lat) && !isNaN(r.lon));
         plzDataLoaded = true;
-        console.log("Auto-loaded CSV with", plzData.length, "entries");
+        // console.log("Auto-loaded CSV with", plzData.length, "entries");
       }
     });
   });
