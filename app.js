@@ -9,6 +9,8 @@ let heatLayer = null;
 let circle = null;
 let darkMode = false;
 let zipChart = null;
+let currentLat = null;
+let currentLon = null;
 
 let baseTiles = {
   light: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -81,6 +83,9 @@ function haversine(lat1, lon1, lat2, lon2) {
 function runSearch(lat, lon) {
   const radius = parseFloat(document.getElementById('radius').value);
   document.getElementById('radiusLabel').innerText = `Radius: ${radius} km`;
+
+  currentLat = lat;
+  currentLon = lon;
 
   if (circle) map.removeLayer(circle);
   if (heatLayer) map.removeLayer(heatLayer);
@@ -308,6 +313,15 @@ zipInput.addEventListener('input', () => {
     } else {
       alert('ZIP not found');
     }
+  }
+});
+
+const radiusInput = document.getElementById('radius');
+document.getElementById('radiusLabel').innerText = `Radius: ${radiusInput.value} km`;
+radiusInput.addEventListener('input', () => {
+  document.getElementById('radiusLabel').innerText = `Radius: ${radiusInput.value} km`;
+  if (currentLat !== null && currentLon !== null) {
+    runSearch(currentLat, currentLon);
   }
 });
 
