@@ -213,7 +213,10 @@ const zipListHTML = list
   document.getElementById("selectAllBtn").addEventListener("click", () => {
     const boxes = document.querySelectorAll(".plzCheck");
     const allChecked = Array.from(boxes).every(cb => cb.checked);
-    boxes.forEach(cb => cb.checked = !allChecked);
+    boxes.forEach(cb => {
+      cb.checked = !allChecked;
+      cb.dispatchEvent(new Event("change"));
+    });
   });
 
   // ✅ FIXED checkbox sync for prefix groups
@@ -224,6 +227,7 @@ const zipListHTML = list
       // Uncheck/check all child ZIP checkboxes
       document.querySelectorAll(`.plzCheck[data-plz^='${prefix}']`).forEach(cb => {
         cb.checked = groupCB.checked;
+        cb.dispatchEvent(new Event('change'));
       });
 
       // Also cascade to all nested .prefixCheck children
@@ -443,7 +447,10 @@ function exportFilteredData(type) {
     groupCB.addEventListener('change', () => {
       const prefix = groupCB.dataset.prefix;
       const allChildren = document.querySelectorAll(`.plzCheck[data-plz^='${prefix}']`);
-      allChildren.forEach(cb => cb.checked = groupCB.checked);
+      allChildren.forEach(cb => {
+        cb.checked = groupCB.checked;
+        cb.dispatchEvent(new Event('change'));
+      });
     });
   });
 
@@ -589,6 +596,29 @@ function updateVisualSelectionState() {
 // Sync on checkbox change
 document.addEventListener("change", e => {
   if (e.target.classList.contains("plzCheck")) {
+    const plz = e.target.dataset.plz;
+
+    // Mirror state across all matching checkboxes
+    document
+      .querySelectorAll(`.plzCheck[data-plz='${plz}']`)
+      .forEach(cb => {
+        if (cb !== e.target) cb.checked = e.target.checked;
+      });
+
+    // Update parent prefix checkboxes
+    for (let len = 1; len < 5; len++) {
+      const prefix = plz.slice(0, len);
+      const group = document.querySelector(
+        `.prefixCheck[data-prefix='${prefix}']`
+      );
+      if (group) {
+        const childZips = document.querySelectorAll(
+          `.plzCheck[data-plz^='${prefix}']`
+        );
+        group.checked = Array.from(childZips).every(cb => cb.checked);
+      }
+    }
+
     updateVisualSelectionState();
   }
 });
