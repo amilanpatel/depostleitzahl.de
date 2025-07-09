@@ -213,7 +213,10 @@ const zipListHTML = list
   document.getElementById("selectAllBtn").addEventListener("click", () => {
     const boxes = document.querySelectorAll(".plzCheck");
     const allChecked = Array.from(boxes).every(cb => cb.checked);
-    boxes.forEach(cb => cb.checked = !allChecked);
+    boxes.forEach(cb => {
+      cb.checked = !allChecked;
+      cb.dispatchEvent(new Event("change"));
+    });
   });
 
   // ✅ FIXED checkbox sync for prefix groups
@@ -224,6 +227,7 @@ const zipListHTML = list
       // Uncheck/check all child ZIP checkboxes
       document.querySelectorAll(`.plzCheck[data-plz^='${prefix}']`).forEach(cb => {
         cb.checked = groupCB.checked;
+        cb.dispatchEvent(new Event('change'));
       });
 
       // Also cascade to all nested .prefixCheck children
@@ -443,7 +447,10 @@ function exportFilteredData(type) {
     groupCB.addEventListener('change', () => {
       const prefix = groupCB.dataset.prefix;
       const allChildren = document.querySelectorAll(`.plzCheck[data-plz^='${prefix}']`);
-      allChildren.forEach(cb => cb.checked = groupCB.checked);
+      allChildren.forEach(cb => {
+        cb.checked = groupCB.checked;
+        cb.dispatchEvent(new Event('change'));
+      });
     });
   });
 
