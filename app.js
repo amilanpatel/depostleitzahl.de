@@ -589,6 +589,29 @@ function updateVisualSelectionState() {
 // Sync on checkbox change
 document.addEventListener("change", e => {
   if (e.target.classList.contains("plzCheck")) {
+    const plz = e.target.dataset.plz;
+
+    // Mirror state across all matching checkboxes
+    document
+      .querySelectorAll(`.plzCheck[data-plz='${plz}']`)
+      .forEach(cb => {
+        if (cb !== e.target) cb.checked = e.target.checked;
+      });
+
+    // Update parent prefix checkboxes
+    for (let len = 1; len < 5; len++) {
+      const prefix = plz.slice(0, len);
+      const group = document.querySelector(
+        `.prefixCheck[data-prefix='${prefix}']`
+      );
+      if (group) {
+        const childZips = document.querySelectorAll(
+          `.plzCheck[data-plz^='${prefix}']`
+        );
+        group.checked = Array.from(childZips).every(cb => cb.checked);
+      }
+    }
+
     updateVisualSelectionState();
   }
 });
